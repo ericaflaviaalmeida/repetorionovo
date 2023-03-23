@@ -1,6 +1,6 @@
 import pygame 
 
-from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE 
+from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE, SCORE_SOUND,FUNDO,FUNDO_INIT
 from dino_runner.components.dinosaur import Dinosaur 
 from dino_runner.components.obstacles.obstacle_manager import ObstacleManager 
 from dino_runner.utils.text_utils import draw_message_component 
@@ -33,6 +33,7 @@ class Game:
         pygame.quit()
 
     def run(self):
+        SCORE_SOUND.play()
         self.playing = True
         self.obstacle_manager.reset_obstacles()
         self.power_up_manager.reset_power_ups()
@@ -63,7 +64,8 @@ class Game:
 
     def draw(self):
         self.clock.tick(FPS)
-        self.screen.fill((255, 255, 255))
+        self.screen.fill((21, 24, 24))
+        self.screen.blit(FUNDO,(0,0))
         self.draw_background()
         self.player.draw(self.screen)
         self.obstacle_manager.draw(self.screen)
@@ -72,7 +74,8 @@ class Game:
         self.power_up_manager.draw(self.screen)
         pygame.display.update()
         pygame.display.flip()
-    
+
+  
     def draw_background(self):
         image_width = BG.get_width()
         self.screen.blit(BG, (self.x_pos_bg, self.y_pos_bg))
@@ -81,6 +84,7 @@ class Game:
             self.screen.blit(BG, (image_width + self.x_pos_bg, self.y_pos_bg))
             self.x_pos_bg = 0
         self.x_pos_bg -= self.game_speed
+
 
     def draw_score(self):
         draw_message_component(
@@ -115,19 +119,21 @@ class Game:
 
     def show_menu(self):
         self.screen.fill((255, 255, 255))
+        self.screen.blit(FUNDO_INIT,(0,0))
+        
         half_screen_height = SCREEN_HEIGHT // 2
         half_screen_width = SCREEN_WIDTH // 2
 
         if self.death_count == 0:
-            draw_message_component("Press any key to start", self.screen)
+            draw_message_component("Pressione qualquer tecla  para iniciar", self.screen)
         else:
-            draw_message_component("Press any key to restart", self.screen, pos_y_center=half_screen_height + 140)
+            draw_message_component("Pressione qualquer tecla  para reiniciar", self.screen, pos_y_center=half_screen_height + 140)
             draw_message_component(
-                f"Your score: {self.score}", self.screen,
+                f"Sua pontuação: {self.score}", self.screen,
                 pos_y_center=half_screen_height - 150
             )
             draw_message_component(
-                f"Death count: {self.death_count}",
+                f"contagem de mortes: {self.death_count}",
                 self.screen,
                 pos_y_center=half_screen_height - 100
             )
